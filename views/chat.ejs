@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>AmBlogger | Chat Here</title>
+</head>
+
+
+<body>
+
+    <div class="container">
+        <h3 class="mb-3">AmBlogger-Chat</h3>
+
+        <form onsubmit="return enterName()">
+            <input type="text" id="name" placeholder="Enter your name">
+            <input type="submit" value="enter">
+        </form>
+        <ul id="users"></ul>
+
+        <form onsubmit="return sendMessage()">
+            <input type="text" id="message" placeholder="Enter Message">
+            <input type="submit" value="Message">
+        </form>
+    </div>
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        var io = io.connect();
+        var receiver = "";
+        function enterName() {
+            //get username
+            var name = document.getElementById("name").value;
+            //send it to sever
+            io.emit("user_connected", name);
+            //prevent the form from submitting
+            return false;
+        }
+        // listen from server
+        io.on("user_connected", function (username) {
+            var html = "";
+            html += "<li><button onclick='onUserSelected(this.innerHTML)'>" + username + "</button></li>";
+            document.getElementById("users").innerHTML += html;
+        })
+
+        function onUserSelected(username){
+            
+        }
+
+        function sendMessage(){
+            var message = document.getElementById("message").value;
+
+        }
+    </script>
+
+</body>
+
+</html>

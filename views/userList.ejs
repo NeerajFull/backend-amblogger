@@ -1,0 +1,100 @@
+<%- include("./layouts/proheader.ejs") %>
+
+    <div class="container">
+        <div class="row mt-3 mb-3">
+            <div class="col-4">
+                <a href="/">
+                    <h3 class="btn btn-warning"><i class="fas fa-house-user"></i></h3>
+                </a>
+            </div>
+            <div class="col-8">
+                <h3>Find people</h3>
+            </div>
+        </div>
+        <div>
+            <input type="search" placeholder="Type a username..."
+                style="width: 100%; outline: none; border: none; font-weight: bold;" autofocus onkeyup="searchUser()"
+                autocomplete="off" id="search">
+        </div>
+        <div class="mt-5" style="display: flex; flex-direction: column;">
+
+            <% locals.users.forEach(user=> { %>
+               
+                <div class="row" id="show">
+                    <div class="col-2 mb-3">
+                        <img src="<%= user.profilePic  %>" alt="profilePic" style="border-radius:50%;" width="50"
+                            height="50">
+                    </div>
+                    <div class="col-7">
+                        <h5 id="username">
+                            <%= user.username %>
+                        </h5>
+                    </div>
+                    <% if(user.username !=locals.username){ %>
+
+
+                        <div class="col-3" style="display:<%= locals.show %>">
+
+                            <% if (user.followers.includes(locals.id)) { %>
+
+                                <form action="/unfollow" method="POST">
+                                    <input type="hidden" name="follow" value="<%= user.username  %>">
+                                    <input type="submit" value="Unfollow" class="btn btn-primary">
+                                </form>
+
+
+                                <% } else{%>
+                                    <form action="/follow" method="POST">
+                                        <input type="hidden" name="follow" value="<%= user.username  %>">
+                                        <input type="submit" value="Follow" class="btn btn-primary ">
+                                    </form>
+                                    <% } %>
+
+                        </div>
+                        <% }else{ %>
+                            <div class="col-3" style="display:<%= locals.notShow %>">
+
+                                <% if (user.followers.includes(locals.id)) { %>
+
+                                    <form action="/unfollow" method="POST">
+                                        <input type="hidden" name="follow" value="<%= user.username  %>">
+                                        <input type="submit" value="Unfollow" class="btn btn-primary">
+                                    </form>
+
+
+                                    <% } else{%>
+                                        <form action="/follow" method="POST">
+                                            <input type="hidden" name="follow" value="<%= user.username  %>">
+                                            <input type="submit" value="Follow" class="btn btn-primary ">
+                                        </form>
+                                        <% } %>
+
+                            </div>
+
+
+                            <% } %>
+                </div>
+
+                <% }) %>
+        </div>
+
+    </div>
+
+    <%- include("./layouts/profooter.ejs") %>
+
+        <script>
+            var search = document.getElementById("search");
+            var username = document.querySelectorAll("#username");
+            var show = document.querySelectorAll("#show");
+
+            function searchUser() {
+
+                for (var i = 0; i < username.length; i++) {
+                    if (username[i].innerText.toLowerCase().indexOf(search.value.toLowerCase()) > -1) {
+                        show[i].style.display = ""
+                    } else {
+                        show[i].style.display = "none"
+                    }
+                }
+            }
+        </script>

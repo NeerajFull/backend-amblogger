@@ -1,0 +1,49 @@
+<%- include("./layouts/mainHeader.ejs") %>
+
+<style>
+    body{
+        background-color: rgb(252, 207, 136);
+    }
+    
+    a{
+        text-decoration: none;
+        font-weight: bold;
+        font-size: large;
+    }
+    a:hover{
+        color: rgb(76, 7, 116);
+    }
+</style>
+<a href="/"><img src="/images/logo.png" alt="logo" width="150px"></a>
+    <h1>Change your Background Pic</h1>
+
+    <h4 style="color: red;">
+        <%= locals.errorMessage %>
+    </h4>
+    <h4 style="color: rgb(6, 5, 112);">
+        <%= locals.message %>
+    </h4>
+    <div class="mt-5" style="display: flex; flex-direction: column;">
+
+        <form method="post" action="/backphoto" enctype="multipart/form-data">
+            <label class="mt-3" for="image">Please Choose a Broad size Picture</label>
+            <input type="file" accept=".jpg, .jpeg, .png" name="image" class="mt-3 form-control" id="backgroundPic" required>
+            <div class="text-center">
+                <progress id="prog" style="width: 50%; height: 40px; display: none;"></progress>
+            </div>
+
+            <button type="submit" class="btn btn-warning mt-3 mb-5" onclick="progress()">Change Pic</button>
+        </form>
+
+    </div>
+    <a href="/profile/<%= locals.id  %>" class="btn btn-primary">Go back to profile</a>
+    <a href="/settings" class="btn btn-success">Go back to Settings</a>
+
+    <%- include("./layouts/mainFooter.ejs") %>
+
+    <script>
+        const prog = document.getElementById("prog");
+        function progress() {
+            prog.style.removeProperty("display")
+        }
+    </script>

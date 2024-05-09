@@ -1,0 +1,111 @@
+body {
+  overflow-x: hidden;
+}
+
+.image1 {
+  position: relative;
+}
+
+.image2 {
+  position: absolute;
+  top: 250px;
+}
+
+.profilepic {
+  border-radius: 50%;
+  width: 230px;
+  height: 230px;
+}
+.backphoto {
+  height: 300px;
+}
+@media only screen and (max-width: 1600px) {
+  body {
+    overflow-x: hidden;
+  }
+  .profilepic {
+    width: 150px;
+    height: 150px;
+    margin-left: 30px;
+  }
+}
+
+.profileName {
+  margin-left: 30px;
+}
+
+.bio {
+  border: 0px solid black;
+  width: 200px;
+  padding: 3px;
+  height: 150px;
+  word-wrap: break-word;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.icon i {
+  font-size: 30px;
+  margin-left: 50px;
+}
+
+.followers {
+  font-size: 30px;
+}
+.following {
+  font-size: 30px;
+}
+.hr {
+  margin-top: 60px;
+}
+.follow {
+  font-size: 30px;
+  margin-left: 10px;
+}
+
+
+@media only screen and (max-width: 630px) {
+  .followers {
+    font-size: 20px;
+  }
+  .following {
+    font-size: 20px;
+  }
+  .follow {
+    font-size: 20px;
+  }
+  .image2 {
+    top: 100px;
+  }
+  .hr {
+    margin-top: 0px;
+  }
+}
+@media only screen and (max-width: 761px){
+  .image2 {
+    top: 190px;
+  }
+  .hr{
+    margin-top: 5px;
+  }
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting {
+  font-size: 24px;
+  color: rgb(255, 255, 255);
+}
+
+.post{
+  width: fit-content;
+  height: fit-content;
+}

@@ -1,0 +1,239 @@
+<%- include("./layouts/proheader.ejs") %>
+
+
+    <div class="d-flex bd-highlight sticky-top " style="background-color: white;">
+        <div class="flex-fill bd-highlight ms-2 mt-4">
+            <a href="/">
+                <h3 class="btn btn-primary"><i class="fas fa-house-user"></i></h3>
+            </a>
+        </div>
+        <div class="flex-fill bd-highlight ms-1 mt-4">
+            <a href="javascript:history.back()" class="btn-sm btn-primary" style="text-decoration: none;">Go Back</a>
+        </div>
+
+        <div class="bd-highlight mt-4 me-1">
+            <a href="/settings" class="btn btn-primary"><i class="fas fa-user-cog setting"></i></a>
+        </div>
+    </div>
+
+    <!-- <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="height: 300px;">
+                <div class="h-75">
+                    <img src="<%= locals.backgroundPic  %>" draggable="false" class="d-block w-100 image1 backphoto" alt="dove"
+                        >
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="jumbotron jumbotron-fluid">
+        <img src="<%= locals.backgroundPic  %>" draggable="false" class="d-block w-100 backphoto" alt="dove">
+    </div>
+
+    <div class="container">
+        <div class="col ml-5 image">
+            <img src="<%= locals.profilePic %>" draggable="false" alt="<%= locals.profileName %>"
+                class="profilepic image2">
+        </div>
+        <hr class="hr">
+        <div class="mt-3 profileName">
+            <h2>
+                <%= locals.profileName %>
+            </h2>
+            <hr>
+            <div class="bio">
+                <h5>
+                    <%= locals.bio %>
+                </h5>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row align-items-center">
+        <div class="col-4">
+            <form action="/follow" method="POST">
+                <input type="hidden" name="follow" value="<%= locals.profileName  %>">
+                <input type="submit" value="Follow" class="btn btn-success follow"
+                    style="display: <%= locals.display %>;">
+
+            </form>
+            <form action="/unfollow" method="POST">
+                <input type="hidden" name="follow" value="<%= locals.profileName  %>">
+                <input type="submit" value="Unfollow" class="btn btn-success follow"
+                    style="display: <%= locals.unfollow %>;">
+            </form>
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <div class="col">
+                    <h6 class="followers" style="margin-left: 35px;">
+                        <%= locals.followers.length %>
+                    </h6>
+                </div>
+            </div>
+            <h6 class="followers" style="color: rgb(233, 52, 203);">Followers</h6>
+
+
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <div class="col">
+                    <h6 style="margin-left: 35px;" class="following">
+                        <%= locals.following.length %>
+                    </h6>
+                </div>
+            </div>
+            <h6 class="following" style="color: rgb(75, 159, 233);">Following</h6>
+        </div>
+    </div>
+    <hr>
+
+    <div class="d-flex bd-highlight sticky-top">
+        <div class="flex-fill bd-highlight text-center">
+            <a href="/profile/<%= locals.id  %>" style="text-decoration: none; font-size: larger;">Posts<span>(<%=
+                        locals.posts.length %>)</span></a>
+        </div>
+        <div class="bd-highlight text-center" style="border-left: 2px solid black; height: 20px;">
+        </div>
+        <div class="flex-fill bd-highlight text-center">
+            <form action="/videocollection" method="post">
+                <input type="hidden" name="username" value="<%= locals.profileName %>">
+                <input type="submit" value="Videoes" style="border: none; outline: none;">
+            </form>
+        </div>
+
+    </div>
+    <hr>
+    </div>
+
+    <div class="flex">
+        <% locals.posts.reverse().map(post=> { %>
+            <!-- <% if (post.photo!==undefined) { %> -->
+            <div class="container post">
+                <div class="dropdown text-center">
+                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                        aria-expanded="false" style="border: none; outline: none; display:<%= locals.button %>">
+                        <i class="fas fa-trash-alt" style="color: red; font-size: 20px;"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <h5>Delete Post?</h5>
+                        </li>
+
+
+                        <form action="/deletepost" method="POST">
+
+                            <input type="hidden" name="postId" value="<%= post._id  %>">
+                            <input type="hidden" name="fileName" value="<%= post.fileName  %>">
+
+
+                            <li><button type="submit" style="border: none; outline: none; ">Yes</button></li>
+
+
+                        </form>
+                        <li><a class="dropdown-item" href="/profile/<%= locals.id  %>">No</a></li>
+
+                    </ul>
+                </div>
+
+                <div id="carouselExampleSlidesOnly" class="carousel slide justify-content-center"
+                    data-bs-ride="carousel">
+                    <div class="carousel-item active">
+
+                        <% if (post.photo!==undefined) { %>
+                            <img src="<%= post.photo  %>" draggable="false" width="500" height="400"
+                                style="max-width: 100%; height: auto; " alt="post">
+                            <% } %>
+
+                    </div>
+                </div>
+                <p class="mt-3">#<span>
+                        <%=post.caption %>
+                    </span></p>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <% if (post.like.includes(locals.id)) { %>
+                        <form action="/unlike" method="POST">
+                            <div>
+                                <input type="hidden" name="like" value="<%= post._id  %>">
+                                <input type="hidden" name="where" value="profile">
+
+                                <button type="submit"
+                                    style="border: none; background-color: white; outline: none;"><a><i
+                                            style="color: red; font-size: 30px;" class="fas fa-heart"></i></a></button>
+                                <span>
+                                    <%= post.like.length %>
+                                </span>
+                            </div>
+                        </form>
+                        <% }else{ %>
+                            <form action="/like" method="POST">
+                                <div>
+                                    <input type="hidden" name="like" value="<%= post._id  %>">
+                                    <input type="hidden" name="where" value="home">
+
+                                    <button type="submit"
+                                        style="border: none; background-color: white; outline: none;"><i
+                                            class="fas fa-heart" style="font-size: 30px;"></i></button>
+                                    <span>
+                                        <%= post.like.length %>
+                                    </span>
+                                </div>
+                            </form>
+                            <% } %>
+                </div>
+                <div class="col-6">
+
+                    <form action="/postcomment" method="POST">
+                        <input type="hidden" name="postId" value="<%= post._id  %>">
+                        <input type="text" autocomplete="off" name="comment" placeholder="Add a comment..."
+                            style="width: 70%; outline: none; border-radius:30px; padding: 4px;" required>
+                        <button type="submit"
+                            style="border: none; outline: none; background-color: white; font-weight: bold;">Post</button>
+                    </form>
+                </div>
+                <div class="col-3">
+                    <form action="/comment" method="POST">
+                        <div>
+                            <input type="hidden" name="postId" value="<%= post._id  %>">
+
+                            <button type="submit" style="background-color: white; outline: none; border: none;"><i
+                                    class="fas fa-comment" style="font-size: 30px;"></i></button>
+                            <span>
+                                <%= post.comment.length %>
+                            </span>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+    </div>
+    <hr>
+    <!-- <% } %> -->
+
+
+
+    <% }) %>
+
+
+        <div class="d-flex bd-highlight fixed-bottom mb-4">
+            <div class="flex-fill bd-highlight text-center">
+                <div class="dropdown">
+                    <button class="btn btn-danger" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                        aria-expanded="false" style="border: none; outline: none;">
+                        <i class="fas fa-plus-circle" style="font-size: 30px;"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="/createpost">Create a Post</a></li>
+                        <li><a class="dropdown-item" href="/video">Post a Video</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <%- include("./layouts/profooter.ejs") %>

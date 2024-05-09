@@ -1,0 +1,18 @@
+<%- include("./layouts/mainHeader.ejs") %>
+
+    <div class="container">
+        <h4 class="mt-3 mb-3">Usernames related to your query</h4>
+        <% locals.users.forEach(user=> { %>
+            <div style="display: flex; flex-direction: column;">
+                <h3>
+                    <%= user.username %>
+                </h3>
+            </div>
+
+            <% }) %>
+
+
+    </div>
+
+
+    <%- include("./layouts/mainFooter.ejs") %>

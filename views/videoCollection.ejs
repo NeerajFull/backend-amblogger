@@ -1,0 +1,135 @@
+<%- include("./layouts/proheader.ejs") %>
+    <a href="/"><img src="/images/logo.png" alt="logo" width="150px"></a>
+
+    <div class="d-flex bd-highlight sticky-top">
+        <div class="flex-fill bd-highlight ms-1 mt-1">
+            <a href="/profile/<%= locals.id  %>" class="btn btn-danger ms-1"><i class="fas fa-user-tie"></i></a>
+        </div>
+        <div class="flex-fill bd-highlight ms-1 mt-1">
+            <a href="javascript:history.back()" class="btn-sm btn-primary" style="text-decoration: none;">Go Back</a>
+        </div>
+
+        <div class="bd-highlight mt-1 me-1">
+            <a href="/settings" class="btn btn-primary"><i class="fas fa-user-cog setting"></i></a>
+        </div>
+    </div>
+
+    <div class="flex">
+        <% if (locals.posts.length>0) { %>
+
+
+            <% locals.posts.reverse().forEach(post=> { %>
+                <% if(post._id!==undefined){ %>
+                    <% if (post.photo==undefined) { %>
+                        <div class="container post">
+
+
+                            <div class="dropdown text-center">
+                                <% if (id===user_id) { %>
+                                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        style="border: none; outline: none;">
+                                        <i class="fas fa-trash-alt" style="color: red; font-size: 20px;"></i>
+                                    </button>
+                                    <% } %>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li>
+                                                <h5>Delete Post?</h5>
+                                            </li>
+                                            <form action="/deletepost" method="POST">
+                                                <input type="hidden" name="postId" value="<%= post._id  %>">
+                                                <input type="hidden" name="fileName" value="<%= post.fileName  %>">
+                                                <li><button type="submit"
+                                                        style="border: none; outline: none; ">Yes</button>
+                                                </li>
+                                            </form>
+                                            <li><a class="dropdown-item" href="/profile/<%= locals.id  %>">No</a></li>
+                                        </ul>
+                            </div>
+
+
+
+
+
+                            <div id="carouselExampleSlidesOnly" class="carousel slide justify-content-center"
+                                data-bs-ride="carousel">
+                                <div class="carousel-item active">
+
+
+                                    <video draggable="false" width="500" height="400" controls autoplay loop
+                                        style="max-width: 100%; height: 600px;" muted>
+                                        <source src="<%= post.video %>">
+                                    </video>
+
+                                </div>
+                            </div>
+                            <p class="mt-3">#<span>
+                                    <%= post.caption %>
+                                </span></p>
+                        </div>
+                        <div class="d-flex bd-highlight">
+                            <div class="flex-fill bd-highlight icon">
+                                <% if (post.like.includes(locals.id)) { %>
+                                    <form action="/unlike" method="POST">
+                                        <div>
+                                            <input type="hidden" name="like" value="<%= post._id  %>">
+                                            <input type="hidden" name="where" value="home">
+
+                                            <button type="submit"
+                                                style="border: none; background-color: white; outline: none;"><a><i
+                                                        style="color: red;" class="fas fa-heart"></i></a></button>
+                                            <span>
+                                                <%= post.like.length %>
+                                            </span>
+                                        </div>
+                                    </form>
+                                    <% }else{ %>
+                                        <form action="/like" method="POST">
+                                            <div>
+                                                <input type="hidden" name="like" value="<%= post._id  %>">
+                                                <input type="hidden" name="where" value="home">
+
+                                                <button type="submit"
+                                                    style="border: none; background-color: white; outline: none;"><a><i
+                                                            class="fas fa-heart"></i></a></button>
+                                                <span>
+                                                    <%= post.like.length %>
+                                                </span>
+                                            </div>
+                                        </form>
+                                        <% } %>
+
+                            </div>
+                            <div class="flex-fill bd-highlight icon">
+                                <i class="fas fa-comments"></i><span>2</span>
+                            </div>
+                            <div class="flex-fill bd-highlight icon">
+                                <a href="<%= post.photo  %>" download="<%= post.postedBy.username %>" target="_blank"><i
+                                        class="fas fa-download"></i></a>
+                            </div>
+                        </div>
+    </div>
+    <hr>
+    <% } %>
+        <% } %>
+
+            <% }) %>
+                <% } %>
+                    <div class="d-flex bd-highlight fixed-bottom ">
+                        <div class="flex-fill bd-highlight text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-danger" type="button" id="dropdownMenuButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="border: none; outline: none;">
+                                    <i class="fas fa-plus-circle" style="font-size: 30px;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="/createpost">Create a Post</a></li>
+                                    <li><a class="dropdown-item" href="/video">Post a Video</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <%- include("./layouts/profooter.ejs") %>

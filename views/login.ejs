@@ -1,0 +1,31 @@
+<%- include("./layouts/logHeader.ejs") %>
+
+
+
+    <form method="POST">
+
+        <input type="text" autocomplete="off" placeholder="Email or Username" name="email" required class="input" autofocus
+            value="<%= locals.email %>">
+
+        <input type="password" placeholder="Password" class="input" name="password" required>
+
+
+        <!-- <input type="text" placeholder="Email or Username" name="email" required class="input" 
+            value="nk1@gmail.com">
+
+        <input type="password" placeholder="Password" class="input" name="password" required value="Neerajkajal"> -->
+
+        <input type="submit" value="Log In" class="btn btn-primary input-button">
+
+
+    </form>
+
+    <p class="or">or</p>
+
+
+    <a href="/register" style="text-decoration: none; "><button type="button" class="btn btn-success button">Create
+            New Account</button> </a>
+
+
+
+    <%- include("./layouts/logFooter.ejs") %>

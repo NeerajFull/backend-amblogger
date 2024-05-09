@@ -1,0 +1,54 @@
+<%- include("./layouts/mainHeader.ejs") %>
+
+    <style>
+        body {
+            background-color: rgb(252, 207, 136);
+        }
+
+        ul li {
+            margin: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: large;
+        }
+
+        a:hover {
+            color: rgb(150, 22, 224);
+        }
+    </style>
+<a href="/"><img src="/images/logo.png" alt="logo" width="150px"></a>    <h3 class="mb-5 mt-3">Settings</h3>
+
+
+    <ul>
+        <li> <a href="/profilePic">Edit Profile Pic</a> </li>
+        <li> <a href="/bio">Edit your Bio</a> </li>
+        <li> <a href="/backPhoto">Edit background Pic</a> </li>
+        <li> <a href="/deleteVideoes">Delete videoes</a> </li>
+        
+        <li> <a href="/logout">Logout</a> </li>
+
+
+        <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+              Delete Account Permanantly
+            </button>
+            <ul class="dropdown-menu dropdown-menu-danger" aria-labelledby="dropdownMenuButton2">
+              <li><a class="dropdown-item active"> Your data will be lost. Are You sure?</a></li>
+              <li ><a href="/deleteAccount" class="dropdown-item btn-sm btn-danger">Yes</a>
+              </li>
+              <li><a class="dropdown-item" href="/settings">No</a></li>
+              
+            </ul>
+          </div>
+        
+    </ul>
+
+    <a href="/profile/<%= locals.id  %>" class="btn btn-primary mt-3">Go back to profile</a>
+
+   
+    <%- include("./layouts/mainFooter.ejs") %>
+
+        

@@ -1,0 +1,41 @@
+<%- include("./layouts/mainHeader.ejs") %>
+    <a href="/"><img src="/images/logo.png" alt="logo" width="150px"></a>
+    <div class="container mt-5">
+
+        <h3 class="mb-5">Create Your Post</h3>
+        <h4 style="color: red;">
+            <%= locals.errorMessage %>
+        </h4>
+        <h4 style="color: rgb(21, 255, 0);">
+            <%= locals.message %>
+        </h4>
+        <form action="/createpost" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="image">Upload a Pic</label>
+                <input type="file" accept="image/*" name="image" id="image" class="form-control" required>
+            </div>
+            <div class="form-group mt-3 mb-3">
+                <label for="caption">Caption</label>
+                <input type="text" autocomplete="off" name="caption" placeholder="#Type your Caption..."
+                    class="form-control" style="border: none; outline: none;">
+            </div>
+            <div class="text-center">
+                <progress id="prog" style="width: 50%; height: 40px; display: none;"></progress>
+            </div>
+            
+            
+            <button type="submit" onclick="progress()" class="form-control btn btn-info">Post</button>
+        </form>
+
+
+        <a href="/profile/<%= locals.id  %>" class="btn btn-secondary mt-5">Go Back to profile</a>
+    </div>
+
+    <%- include("./layouts/mainFooter.ejs") %>
+
+        <script>
+            const prog = document.getElementById("prog");
+            function progress() {
+                prog.style.removeProperty("display")
+            }
+        </script>
