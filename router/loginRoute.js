@@ -4,41 +4,40 @@ const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 
 
-router.get("/", (req, res) => {
-    res.render("login", { title: "AmBlogger-Login" });
-});
-
 router.post("/", async (req, res) => {
 
-    const email = req.body.email.toLowerCase().trim();
-    const username = req.body.email.trim();
-    const password = req.body.password;
+    try {
 
-    if (email && password) {
+        const email = req.body.email.toLowerCase().trim();
+        const username = req.body.email.trim();
+        const password = req.body.password;
 
-        const user = await User.findOne({
-            $or: [{ email }, { username }]
-        })
-            .catch(error => {
-                console.log(error);
+        if (email && password) {
 
-                var errorMessage = "Something Went Wrong.";
-                res.render("login", { errorMessage, email, username, title: "AmBlogger-Login" });
+            const user = await User.findOne({
+                $or: [{ email }, { username }]
             });
 
-        if (user !== null) {
-            var result = await bcrypt.compare(password, user.password);
-            if (result === true) {
-                //correct password
-                req.session.user = user;
-                return res.redirect(`/`);
+            if (user !== null) {
+                const result = await bcrypt.compare(password, user.password);
+                if (result === true) {
+                    //correct password
+                    req.session.user = user;
+                    return res.status(200).send({ status: true, message: "Successfully logged in" });
+                } else {
+                    throw { error: "Credentials incorrect.", statusCode: 401 };
+                }
+            } else {
+                throw { error: "User is not available", statusCode: 404 };
             }
+
         }
-        var errorMessage = "Credentials incorrect.";
-        return res.render("login", { errorMessage, title: "AmBlogger-Login" });
+        throw { error: "Make sure each field has correct values.", statusCode: 400 };
+    } catch (error) {
+        console.log("Login ", error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
     }
-    var errorMessage = "Make sure each field has correct values.";
-    return res.render("login", { errorMessage, title: "AmBlogger-Login" });
+
 
 });
 

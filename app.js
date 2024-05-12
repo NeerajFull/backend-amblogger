@@ -30,10 +30,7 @@ app.use(session({
     saveUninitialized: false
 }));
 
-mongoose.connect(process.env.MONGO_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-})
+mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("DB CONNECTED");
         const PORT = process.env.PORT || 3000;
@@ -74,11 +71,10 @@ const chat = require("./router/chatRoute");
 app.use("/login", login);
 app.use("/register", register);
 app.use("/logout", logout);
-app.use("/profile/:id", requireLogin, profile);
-app.use("/profile/follow", requireLogin, profile);
+app.use("/profile", requireLogin, profile);
+// app.use("/profile/follow", requireLogin, profile);
 app.use("/", requireLogin, home);
 app.use("/bio", requireLogin, bio);
-app.use("/settings", requireLogin, settings);
 app.use("/deleteAccount", requireLogin, deleteAccount);
 app.use("/profilePic", requireLogin, upload.single("image"), profilePic);
 app.use("/backphoto", requireLogin, upload.single("image"), backphoto);

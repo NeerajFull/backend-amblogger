@@ -1,22 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const session = require("express-session");
 const Post = require("../model/Post");
-const User = require("../model/User");
 
 
 router.get("/", async (req, res) => {
-    Post.find({})
-        .populate("postedBy", "_id username")
-        .exec((err, posts) => {
-            if (err) {
-                console.log("error in getting user posts", err)
-                res.render("home", { errorMessage: "Can't Find Post" });
-            } else {
-                // console.log(posts)
-                res.render("home", { posts, id: req.session.user._id });
-            }
-        })
+    try {
+        const posts = await Post.find({}).populate("postedBy", "_id username")
+
+        if (!posts) {
+            throw { error: "Posts not found", statusCode: 404 };
+        } else {
+            res.status(200).send({ posts, id: req.session.user._id, status: true });
+        }
+
+    } catch (error) {
+        console.log("get all posts: ", error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
+
 });
 
 // router.post("/home/search",(req,res)=>{
@@ -28,8 +29,6 @@ router.get("/", async (req, res) => {
 //             res.render("search",{users});
 //         }
 //     })
-
-    
 // })
 
 module.exports = router;
