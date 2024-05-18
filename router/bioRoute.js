@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
             throw { error: "Unable to update bio", statusCode: 500 };
         } else {
             req.session.user = updatedBio;
-            res.status(201).send({ message: "Bio Successfully Updated", id: req.session.user._id, status: true });
+            return res.status(201).send({ message: "Bio Successfully Updated", status: true });
         }
 
     } catch (error) {

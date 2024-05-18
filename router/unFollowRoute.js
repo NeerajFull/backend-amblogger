@@ -5,29 +5,31 @@ const router = express.Router();
 const User = require("../model/User");
 const Post = require("../model/Post");
 
-router.post("/", (req, res) => {
-    const follow = req.body.follow;
-    User.findOneAndUpdate({ username: follow }, { $pull: { followers: req.session.user._id } }, { new: true }, (err, result) => {
-        if (err) {
-            console.log("Error In Following", err);
+router.post("/", async (req, res) => {
+
+
+    try {
+        const follow = req.body.follow;
+        const result = await User.findOneAndUpdate({ username: follow }, { $pull: { followers: req.session.user._id } }, { new: true });
+        if (!result) {
+            throw { error: "Something went wrong", statusCode: 500 };
         } else {
-            User.findByIdAndUpdate(req.session.user._id, { $pull: { following: result._id } }, { new: true }, (err, result2) => {
+            const result2 = await User.findByIdAndUpdate(req.session.user._id, { $pull: { following: result._id } }, { new: true });
+            if (!result2) {
+                throw { error: "Something went wrong", statusCode: 500 };
+            } else {
+                const posts = await Post.find({ postedBy: result._id });
                 if (err) {
-                    console.log(err);
+                    throw { error: "Unable to find post", statusCode: 500 };
                 } else {
-                    Post.find({ postedBy: result._id }, (err, posts) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.render("profile", { profilePic: result.profilePic, backgroundPic: result.backgroundPic, bio: result.bio, profileName: result.username, posts, following: result.following, followers: result.followers, button: "none", display: "", unfollow: "none" })
-                        }
-                    })
+                    res.status(200).send({ message: "Successfully deleted the post.", status: true, data: { profilePic: result.profilePic, backgroundPic: result.backgroundPic, bio: result.bio, profileName: result.username, posts, following: result.following, followers: result.followers } });
                 }
-            })
-
+            }
         }
-
-    })
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
 
 })
 

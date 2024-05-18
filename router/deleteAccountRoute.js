@@ -6,34 +6,39 @@ const router = express.Router();
 const { cloudinary } = require("../cloudinary/index");
 
 
-router.get("/", (req, res) => {
-    const id = req.session.user._id;
-    User.findByIdAndDelete(id, (err, data) => {
-        if (err) {
-            console.log("error in deleting", err)
-        } else {
-            console.log("Account Deleted");
-            Post.find({ postedBy: id }, (err, posts) => {
-                if (err) {
-                    console.log(err);
+router.get("/", async (req, res) => {
+    //NEED TO DELETE COMMENTS ALSO,,, LIKES DISLIKES... 
+    try {
+        const id = req.session.user._id;
+        const user = await User.findByIdAndDelete(id);
+
+        if (user) {
+            const posts = await Post.find({ postedBy: id });
+            if (posts) {
+                posts.forEach(post => {
+                    cloudinary.uploader.destroy(post.fileName, { resource_type: "raw" });
+                });
+                const post = await Post.deleteMany({ postedBy: id });
+                if (post) {
+                    req.session.destroy();
+                    res.status(200).send({ message: "our Account has been Deleted Permanantly", status: true });
                 } else {
-                    posts.forEach(post => {
-                        cloudinary.uploader.destroy(post.fileName, { resource_type: "raw" });
-                    });
-                    Post.deleteMany({ postedBy: id })
-                        .then(() => {
-                            console.log("deleted Posts");
-                            req.session.destroy();
-                            res.render("login", { errorMessage: "Your Account has been Deleted Permanantly" });
-                        }).catch(err => {
-                            console.log(err);
-                        });
+                    throw { error: "Not able to delete posts", statusCode: 500 };
                 }
-            });
+            } else {
+                throw { error: "Posts not found", statusCode: 404 };
+            }
 
-
+        } else {
+            throw { error: "User not found", statusCode: 400 };
         }
-    });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
+
+
 });
 
 module.exports = router;

@@ -1,32 +1,26 @@
 const express = require("express");
-const session = require("express-session");
 const router = express.Router();
 const Post = require("../model/Post");
 const { cloudinary } = require("../cloudinary/index");
 
-router.get("/", (req, res) => {
-    Post.find({ postedBy: req.session.user._id }, (err, posts) => {
-        if (err) {
-            console.log(err);
-        } else {
+router.post("/", async (req, res) => {
+    try {
+        const fileName = req.body.fileName;
+        const deleted = await Post.findOneAndDelete({ fileName });
 
-            res.render("deleteVideoes", { posts, id: req.session.user._id });
-        }
-    })
-
-});
-
-router.post("/", (req, res) => {
-    const fileName = req.body.fileName;
-    Post.findOneAndDelete({ fileName }, (err, deleted) => {
-        if (err) {
-            console.log(err);
+        if (!deleted) {
+            throw { error: "Post not found", statusCode: 404 };
         } else {
             cloudinary.uploader.destroy(fileName, { resource_type: "raw" })
             console.log("Deleted video successfully");
             res.redirect("/deleteVideoes");
+            return res.status(200).send({ message: "Deleted video", status: true });
         }
-    })
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
+
 
 })
 

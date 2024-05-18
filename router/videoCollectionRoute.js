@@ -9,26 +9,23 @@ router.get("/", (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-    const username = req.body.username;
-    User.findOne({ username: username }, (err, user) => {
-        if (err) {
-            console.log(err);
+    try {
+        const username = req.body.username;
+        const user = await User.findOne({ username: username });
+        if (!user) {
+            throw { error: "User not found", statusCode: 404 };
         } else {
-            Post.find({ postedBy: user._id }, (err, posts) => {
-                if (err) {
-                    console.log(err);
-                    res.render("videoCollection");
-                } else {
-                    console.log(posts)
-
-                    res.render("videoCollection", { posts, id: req.session.user._id, user_id: posts.length > 0 ? posts[0].postedBy : "" });
-
-
-                }
-            })
+            const posts = await Post.find({ postedBy: user._id });
+            if (!posts) {
+                throw { error: "Post not found", statusCode: 404 };
+            } else {
+                return res.status(200).send({ message: "Fetched posts", status: true });
+            }
         }
-    })
-
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
 
 });
 

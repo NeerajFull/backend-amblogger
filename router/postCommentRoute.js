@@ -4,41 +4,38 @@ const router = express.Router();
 const Post = require("../model/Post");
 const User = require("../model/User");
 
-router.get("/", (req, res) => {
-    res.redirect("/")
-})
 
-router.post("/", (req, res) => {
-    const postId = req.body.postId;
-    const comments = req.body.comment;
-    if (comments.trim().length == 0) {
-        res.redirect("/postcomment")
-        return;
-    }
-    User.findOne({_id:req.session.user._id },(err,user)=>{
-        if(err){
-            console.log(err);
-        }else{
+router.post("/", async (req, res) => {
+    try {
+        const postId = req.body.postId;
+        const comments = req.body.comment;
+
+
+        const user = await User.findOne({ _id: req.session.user._id });
+        if (!user) {
+            throw { error: "User not found", statusCode: 404 };
+        } else {
             const username = user.username;
-            Post.findOneAndUpdate({ _id: postId }, { $push: { comment: username } }, { new: true }, (err, post) => {
+            const post = await Post.findOneAndUpdate({ _id: postId }, { $push: { comment: username } }, { new: true });
+            if (!post) {
+                throw { error: "Post not found", statusCode: 404 };
+            } else {
+                const posts = await Post.findOneAndUpdate({ _id: postId }, { $push: { commentText: comments } }, { new: true });
                 if (err) {
-                    console.log(err);
+                    throw { error: "Post not found", statusCode: 404 };
                 } else {
-                    Post.findOneAndUpdate({ _id: postId }, { $push: { commentText: comments } }, { new: true }, (err, posts) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            console.log(posts)
-                            res.redirect("/postcomment");
-                        }
-                    })
-        
+                    return res.status(201).send({ message: "Bio Successfully Updated", status: true });
                 }
-            })
+            }
         }
-    })
-    
-    
+
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
+
+
+
 })
 
 module.exports = router;

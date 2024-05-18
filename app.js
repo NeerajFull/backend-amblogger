@@ -17,8 +17,7 @@ var io = require("socket.io")(http);
 
 
 app.use(express.static(path.join(__dirname, "public")));
-app.set("view engine", "ejs");
-app.set("views", "views");
+
 
 //express middleware
 app.use(express.urlencoded({ extended: false }));
@@ -52,7 +51,7 @@ const profilePic = require("./router/profilePicRoute");
 const backphoto = require("./router/backgroundPicRoute");
 const home = require("./router/homeRoute");
 const bio = require("./router/bioRoute");
-const settings = require("./router/settingsRoute");
+// const settings = require("./router/settingsRoute");
 const deleteAccount = require("./router/deleteAccountRoute");
 const createPost = require("./router/createPostRoute");
 const deletePost = require("./router/deletePostRoute");

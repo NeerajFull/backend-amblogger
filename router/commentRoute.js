@@ -1,66 +1,63 @@
 const express = require("express");
-const session = require("express-session");
 const router = express.Router();
 const Post = require("../model/Post");
 const User = require("../model/User");
 
 
-router.get("/", (req, res) => {
-    res.redirect("/comment");
-})
+router.post("/", async (req, res) => {
+    try {
+        const postId = req.body.postId;
 
-router.post("/", (req, res) => {
-    const postId = req.body.postId;
-
-    Post.findOne({ _id: postId }, (err, post) => {
-        if (err) {
-            console.log(err);
+        const post = await Post.findOne({ _id: postId });
+        if (!post) {
+            throw { error: "Post not found", statusCode: 404 };
         } else {
-            // console.log(post)
+
             const users = post.comment;
             const postedBy = post.postedBy;
-            User.findOne({ _id: postedBy }, (err, user) => {
-                if (err) {
-                    console.log(err);
+            const user = await User.findOne({ _id: postedBy });
+            if (!user) {
+                throw { error: "User, who posted, not found", statusCode: 404 };
+            } else {
+                const postUser = user.username;
+                const myuser = await User.findOne({ _id: req.session.user._id });
+                if (!myuser) {
+                    throw { error: "User not found", statusCode: 404 };
                 } else {
-                  
-                    const postUser = user.username;
-                    User.findOne({ _id: req.session.user._id }, (err, myuser) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            const myUser = myuser.username;
-                            // console.log(myuser,myUser)
-                            const commentText = post.commentText;
-                            console.log("Users array",users)
-                            res.render("comment", { users, commentText, id: req.session.user._id, postId, postUser,myUser });
-                        }
-                    })
+                    const myUser = myuser.username;
+                    const commentText = post.commentText;
+                    return res.status(201).send({ message: "Comments fetched", data: { users, commentText, postId, postUser, myUser }, status: true });
                 }
-            })
-
+            }
         }
-    });
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
+
+
 })
 
 router.post("/deletecomment", async (req, res) => {
 
+    try {
+        const post = await Post.findOneAndUpdate({ _id: req.body.id }, { $pull: { comment: req.body.user } }, { new: true });
 
-    await Post.findOneAndUpdate({ _id: req.body.id }, { $pull: { comment: req.body.user } }, { new: true }, (err, post) => {
-        if (err) {
-            console.log(err);
+        if (!post) {
+            throw { error: "Post not found", statusCode: 404 };
         } else {
-            console.log("User deleted from comment");
-            Post.findOneAndUpdate({ _id: req.body.id }, { $pull: { commentText: req.body.commentText } }, { new: true }, (err, data) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("DEleted Comment");
-                    res.redirect("/");
-                }
-            })
+            const data = await Post.findOneAndUpdate({ _id: req.body.id }, { $pull: { commentText: req.body.commentText } }, { new: true });
+            if (!data) {
+                throw { error: "Post not found", statusCode: 404 };
+            } else {
+                return res.status(201).send({ message: "Comment deleted", status: true });
+            }
         }
-    })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).send({ message: error.error, status: false });
+    }
 
 })
 
