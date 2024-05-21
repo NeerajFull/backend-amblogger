@@ -23,12 +23,12 @@ router.post("/", async (req, res) => {
                 if (result === true) {
                     //correct password
                     req.session.user = user;
-                    return res.status(200).send({ status: true, message: "Successfully logged in" });
+                    return res.status(200).send({ status: true, message: "Successfully logged in", data: user });
                 } else {
                     throw { error: "Credentials incorrect.", statusCode: 401 };
                 }
             } else {
-                throw { error: "User is not available", statusCode: 404 };
+                throw { error: "User not found", statusCode: 404 };
             }
 
         }

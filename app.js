@@ -7,7 +7,7 @@ const requireLogin = require("./middleware/logmiddleware");
 const multer = require("multer");
 const { storage } = require("./cloudinary/index");
 const upload = multer({ storage });
-
+const cors = require('cors')
 
 const app = express();
 //creating http instance
@@ -15,7 +15,7 @@ const http = require("http").createServer(app);
 //creating socket io 
 var io = require("socket.io")(http);
 
-
+app.use(cors())
 app.use(express.static(path.join(__dirname, "public")));
 
 
